@@ -30,7 +30,7 @@ BEGIN
 	SET ANSI_WARNINGS OFF;
 
 
-	CREATE TABLE #Report
+	CREATE TABLE #ReportON02
 	(
 		 ColumnName NVARCHAR(255)
 		,ColumnValue NVARCHAR(255)
@@ -73,7 +73,7 @@ BEGIN
 	
 			BEGIN TRY
 
-				SET @Query = 'INSERT INTO #Report 
+				SET @Query = 'INSERT INTO #ReportON02 
 							SELECT ''' + @TableName + '.' + @ColumnName + ''', LEFT( '+ @ColumnName +', 255 ) 
 							FROM ' + @TableName + ' (NOLOCK) ' + ' WHERE ' + @ColumnName + CASE WHEN @QStringSearch IS NOT NULL THEN ' LIKE ' + @QStringSearch ELSE 'IS NULL' END;					
 				EXEC (@Query);
@@ -87,7 +87,7 @@ BEGIN
 			'<ColumnName>' + @ColumnName + '</ColumnName>' + CHAR(13) +
 			'<LookingFor>' + @QStringSearch + '</LookingFor>' + CHAR(13) +
 			'<Query>' + @Query + '</Query>' + CHAR(13) +
-			'<ErrorLine>' + ERROR_LINE() + '</ErrorLine>' + CHAR(13) +
+			'<ErrorLine>' + CAST( ERROR_LINE() AS VARCHAR ) + '</ErrorLine>' + CHAR(13) +
 			'<ErrorMessage>' + ERROR_MESSAGE() + '</ErrorMessage>' + CHAR(13) +
 			'</ERROR>' + CHAR(13);
 
@@ -108,7 +108,7 @@ BEGIN
 		 ColumnName AS [SchemaName.TableName.ColumnName]
 		,ColumnValue
 	
-	FROM #Report;
+	FROM #ReportON02;
 
 END
 GO
